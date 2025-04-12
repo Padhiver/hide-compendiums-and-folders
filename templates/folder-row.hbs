@@ -1,6 +1,7 @@
 {{! Template partiel pour afficher une ligne de dossier (utilisé récursivement) }}
-<div class="form-group folder-row" style="padding-left: {{multiply this.depth 20}}px;"> {{! Applique une indentation basée sur la profondeur }}
-    <label>
+<div class="form-group folder-row" style="padding-left: {{multiply this.depth 20}}px;"> {{! Applique une indentation
+    basée sur la profondeur }}
+    <label class="{{#if this.isHidden}}label-checked{{/if}}">
         {{! Texte du label avec une icône }}
         <span class="compendium-label-text">
             <i class="fas fa-folder"></i> {{! Utilise une icône Font Awesome pour les dossiers }}
@@ -8,14 +9,15 @@
         </span>
         {{! Conteneur pour le bouton bascule }}
         <div class="toggle-container">
-            <input type="checkbox" name="hideFolder.{{this.id}}" id="hideFolder.{{this.id}}" {{#if this.isHidden}}checked{{/if}}>
+            <input type="checkbox" name="hideFolder.{{this.id}}" id="hideFolder.{{this.id}}" {{#if
+                this.isHidden}}checked{{/if}}>
             <span class="toggle-indicator" aria-hidden="true"></span>
         </div>
     </label>
 </div>
 {{! Si ce dossier a des enfants (sous-dossiers), on appelle récursivement ce même partial pour chacun }}
 {{#if this.children}}
-    {{#each this.children}}
-        {{> "modules/hide-compendiums-and-folders/templates/folder-row.hbs"}}
-    {{/each}}
+{{#each this.children}}
+{{> "modules/hide-compendiums-and-folders/templates/folder-row.hbs"}}
+{{/each}}
 {{/if}}
