@@ -16,7 +16,7 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Options du gestionnaire de formulaire intégré V2
     form: {
       handler: SettingsApp.#onSubmit, // Méthode à appeler lors de la soumission
-      closeOnSubmit: true,           // Ferme la fenêtre après sauvegarde
+      closeOnSubmit: false,           // Ferme la fenêtre après sauvegarde
     },
     // Position et taille
     position: {
