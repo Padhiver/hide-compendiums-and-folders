@@ -3,39 +3,55 @@
     {{! Notes explicatives en haut }}
     <p class="notes">{{notes}}</p>
 
-    {{! Boucle sur tous les groupes (packs par module/système ET groupe hiérarchique des dossiers) }}
+    {{! Boucle sur tous les groupes }}
     {{#each groups}}
-        {{! Utilise l'élément <details> pour rendre chaque groupe réductible }}
-        <details class="compendium-group {{#if this.isFolderHierarchyGroup}}folder-hierarchy-group{{else if this.isPackGroup}}pack-group{{/if}}">
-            {{! Titre cliquable du groupe }}
-            <summary>{{this.title}}</summary>
-            <div class="compendium-group-content">
+    {{! Utilise l'élément <fieldset> avec <legend> }}
+    <fieldset class="compendium-group {{#if this.isFolderHierarchyGroup}}folder-hierarchy-group{{else if this.isPackGroup}}pack-group{{/if}}">
 
-                {{#if this.isPackGroup}}
-                    {{! --- Affichage pour un groupe de Compendiums (liste plate) --- }}
-                    {{#each this.packs}}
-                    <div class="form-group">
-                        <label>
-                            <span class="compendium-label-text">{{this.label}}</span>
-                            <div class="toggle-container">
-                                <input type="checkbox" name="hide.{{this.id}}" id="hide.{{this.id}}" {{#if this.isHidden}}checked{{/if}}>
-                                <span class="toggle-indicator" aria-hidden="true"></span>
-                            </div>
-                        </label>
+        {{! --- Début du Checkbox Hack --- }}
+        {{! 1. La checkbox invisible qui contrôle l'état (fermée par défaut) }}
+        {{!-- Utilisation de @index pour un ID unique --}}
+        <input type="checkbox" id="toggle-group-{{@index}}" class="toggle-input" />
+
+        {{! 2. La légende contient maintenant un label cliquable }}
+        <legend>
+            {{!-- Le label est lié à la checkbox via 'for' et contient l'icône + titre --}}
+            <label for="toggle-group-{{@index}}" class="toggle-label">
+                 {{!-- L'icône flèche est DANS le label maintenant --}}
+                <i class="fas fa-chevron-right toggle-icon"></i>
+                {{this.title}}
+            </label>
+        </legend>
+        {{! --- Fin du Checkbox Hack --- }}
+
+
+        {{! 3. Le contenu à masquer/afficher (reste le même) }}
+        <div class="compendium-group-content">
+
+            {{#if this.isPackGroup}}
+            {{! --- Affichage pour un groupe de Compendiums --- }}
+            {{#each this.packs}}
+            <div class="form-group">
+                <label>
+                    <span class="compendium-label-text">{{this.label}}</span>
+                    <div class="toggle-container">
+                        <input type="checkbox" name="hide.{{this.id}}" id="hide.{{this.id}}" {{#if this.isHidden}}checked{{/if}}>
+                        <span class="toggle-indicator" aria-hidden="true"></span>
                     </div>
-                    {{/each}}
-                {{else if this.isFolderHierarchyGroup}}
-                    {{! --- Affichage pour la Hiérarchie des Dossiers --- }}
-                    {{#each this.items}} {{! Itérer sur les dossiers racine }}
-                        {{! Appel du template partiel pour chaque dossier racine et ses enfants (récursif) }}
-                        {{> "modules/hide-compendiums-and-folders/templates/folder-row.hbs"}}
-                    {{/each}}
-                {{/if}}
-
+                </label>
             </div>
-        </details>
+            {{/each}}
+            {{else if this.isFolderHierarchyGroup}}
+            {{! --- Affichage pour la Hiérarchie des Dossiers --- }}
+            {{#each this.items}}
+            {{> "modules/hide-compendiums-and-folders/templates/folder-row.hbs"}}
+            {{/each}}
+            {{/if}}
+
+        </div>
+    </fieldset>
     {{else}}
-        {{! Message si aucun groupe n'est trouvé }}
-        <p>{{localize "CACHECOMP.TEMPLATE.NO_COMPENDIUMS_OR_FOLDERS"}}</p>
+    {{! Message si aucun groupe n'est trouvé }}
+    <p>{{localize "CACHECOMP.TEMPLATE.NO_COMPENDIUMS_OR_FOLDERS"}}</p>
     {{/each}}
 </div>
