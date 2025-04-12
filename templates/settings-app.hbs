@@ -1,0 +1,41 @@
+{{! Template principal de la fenêtre de configuration }}
+<div>
+    {{! Notes explicatives en haut }}
+    <p class="notes">{{notes}}</p>
+
+    {{! Boucle sur tous les groupes (packs par module/système ET groupe hiérarchique des dossiers) }}
+    {{#each groups}}
+        {{! Utilise l'élément <details> pour rendre chaque groupe réductible }}
+        <details class="compendium-group {{#if this.isFolderHierarchyGroup}}folder-hierarchy-group{{else if this.isPackGroup}}pack-group{{/if}}">
+            {{! Titre cliquable du groupe }}
+            <summary>{{this.title}}</summary>
+            <div class="compendium-group-content">
+
+                {{#if this.isPackGroup}}
+                    {{! --- Affichage pour un groupe de Compendiums (liste plate) --- }}
+                    {{#each this.packs}}
+                    <div class="form-group">
+                        <label>
+                            <span class="compendium-label-text">{{this.label}}</span>
+                            <div class="toggle-container">
+                                <input type="checkbox" name="hide.{{this.id}}" id="hide.{{this.id}}" {{#if this.isHidden}}checked{{/if}}>
+                                <span class="toggle-indicator" aria-hidden="true"></span>
+                            </div>
+                        </label>
+                    </div>
+                    {{/each}}
+                {{else if this.isFolderHierarchyGroup}}
+                    {{! --- Affichage pour la Hiérarchie des Dossiers --- }}
+                    {{#each this.items}} {{! Itérer sur les dossiers racine }}
+                        {{! Appel du template partiel pour chaque dossier racine et ses enfants (récursif) }}
+                        {{> "modules/hide-compendiums-and-folders/templates/folder-row.hbs"}}
+                    {{/each}}
+                {{/if}}
+
+            </div>
+        </details>
+    {{else}}
+        {{! Message si aucun groupe n'est trouvé }}
+        <p>{{localize "CACHECOMP.TEMPLATE.NO_COMPENDIUMS_OR_FOLDERS"}}</p>
+    {{/each}}
+</div>

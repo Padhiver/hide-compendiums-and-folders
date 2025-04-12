@@ -1,0 +1,31 @@
+{
+  "HIDECOMPENDIUM": {
+    "SETTINGS": {
+      "HIDDENLIST_COMPENDIUMS": {
+        "NAME": "Hidden Compendiums",
+        "HINT": "List of compendiums to hide via the module."
+      },
+      "HIDDENLIST_FOLDERS": {
+        "NAME": "Hidden Folders",
+        "HINT": "Internal list of compendium folders to hide via the module."
+      },
+      "MENU": {
+        "NAME": "Configure Visible Compendiums",
+        "LABEL": "Hide/Show Compendiums"
+      },
+      "WINDOW_TITLE": "Hide / Show Compendiums and Folders",
+      "UNKNOWN_PACKAGE": "Unknown Package",
+      "NOTES": "Check the compendiums or folders you wish to hide in the Compendiums tab. Uncheck to show them again.",
+      "FOLDER_GROUP_TITLE": "Folders"
+    },
+    "TEMPLATE": {
+      "NO_COMPENDIUMS_OR_FOLDERS": "No compendiums or folders found or accessible for configuration."
+    },
+    "COMPENDIUM": {
+      "UNKNOWN_FOLDER": "Unknown Folder"
+    }
+  },
+  "SETTINGS": {
+      "Save": "Save"
+  }
+}

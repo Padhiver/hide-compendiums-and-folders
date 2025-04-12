@@ -1,0 +1,31 @@
+{
+    "HIDECOMPENDIUM": {
+      "SETTINGS": {
+        "HIDDENLIST_COMPENDIUMS": {
+          "NAME": "Compendiums cachés",
+          "HINT": "Liste des compendiums à masquer via le module."
+        },
+        "HIDDENLIST_FOLDERS": {
+          "NAME": "Dossiers Cachés",
+          "HINT": "Liste interne des dossiers de compendium à masquer via le module."
+        },
+        "MENU": {
+          "NAME": "Configurer les compendiums visibles",
+          "LABEL": "Masquer/Afficher compendiums"
+        },
+        "WINDOW_TITLE": "Masquer / Afficher les compendiums et dossiers",
+        "UNKNOWN_PACKAGE": "Paquet Inconnu",
+        "NOTES": "Cochez les compendiums ou dossiers que vous souhaitez masquer dans l'onglet Compendiums. Décochez pour les réafficher.",
+        "FOLDER_GROUP_TITLE": "Dossiers"
+      },
+      "TEMPLATE": {
+        "NO_COMPENDIUMS_OR_FOLDERS": "Aucun compendium ou dossier trouvé ou accessible pour la configuration."
+      },
+      "COMPENDIUM": {
+        "UNKNOWN_FOLDER": "Dossier inconnu"
+      }
+    },
+    "SETTINGS": {
+       "Save": "Sauvegarder"
+    }
+  }

@@ -1,0 +1,205 @@
+// Classe définissant la fenêtre de configuration (ApplicationV2)
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+// Réutilisation des constantes définies dans main.js
+const MODULE_ID = 'hide-compendiums-and-folders';
+const COMPENDIUM_SETTING_KEY = 'hiddenCompendiums';
+const FOLDER_SETTING_KEY = 'hiddenFolders';
+
+export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
+
+  /** @override */
+  static DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
+    // Options générales de l'application
+    id: `${MODULE_ID}-settings`, // ID HTML unique pour la fenêtre
+    tag: "form", // L'élément racine est un formulaire
+    // Options du gestionnaire de formulaire intégré V2
+    form: {
+      handler: SettingsApp.#onSubmit, // Méthode à appeler lors de la soumission
+      closeOnSubmit: true,           // Ferme la fenêtre après sauvegarde
+    },
+    // Position et taille
+    position: {
+      width: 600,
+      height: "auto", // S'adapte au contenu
+    },
+    // Options spécifiques à la fenêtre (barre de titre, classes CSS)
+    window: {
+      title: "HIDECOMPENDIUM.SETTINGS.WINDOW_TITLE", // Clé i18n pour le titre
+      contentClasses: ["sheet", "cachecomp-settings"], // Classes CSS pour le style
+    },
+  });
+
+  /**
+   * Getter pour retourner le titre localisé de la fenêtre.
+   * @returns {string} Le titre traduit.
+   */
+  get title() {
+    return game.i18n.localize(this.options.window.title);
+  }
+
+  /**
+   * Déclare les "parties" de l'application V2 et leurs templates Handlebars associés.
+   * @override
+   */
+  static PARTS = {
+    // Partie principale du contenu
+    content: {
+      template: `modules/${MODULE_ID}/templates/settings-app.hbs`
+    },
+    // Partie pied de page (pour les boutons)
+    footer: {
+      template: "templates/generic/form-footer.hbs", // Template générique de Foundry
+    }
+  };
+
+  /**
+   * Prépare les données (contexte) à envoyer aux templates Handlebars avant le rendu.
+   * @param {object} options - Options de rendu.
+   * @returns {Promise<object>} Le contexte pour les templates.
+   * @override
+   */
+  async _prepareContext(options) {
+    // Récupérer les listes actuelles d'IDs cachés
+    const hiddenCompendiums = game.settings.get(MODULE_ID, COMPENDIUM_SETTING_KEY) || [];
+    const hiddenFolders = game.settings.get(MODULE_ID, FOLDER_SETTING_KEY) || [];
+
+    // --- Groupement des Compendiums par Module/Système ---
+    const packGroups = {};
+    for (const pack of game.packs) {
+      if (!pack.visible) continue; // Ignorer les packs non visibles par l'utilisateur
+      const metadata = pack.metadata;
+      const packageName = metadata.packageName;
+      let packageTitle = game.i18n.localize('HIDECOMPENDIUM.SETTINGS.UNKNOWN_PACKAGE');
+
+      // Déterminer le titre lisible (déjà localisé par Foundry)
+      if (metadata.packageType === "system") { packageTitle = game.system.title; }
+      else if (metadata.packageType === "module") {
+        const module = game.modules.get(packageName);
+        packageTitle = module ? module.title : packageName;
+      }
+
+      // Initialiser le groupe si nécessaire
+      if (!packGroups[packageTitle]) {
+        packGroups[packageTitle] = {
+          title: packageTitle,
+          packs: [],
+          isPackGroup: true // Flag pour le template
+        };
+      }
+
+      // Ajouter les données du pack au groupe
+      packGroups[packageTitle].packs.push({
+        id: pack.collection,
+        label: metadata.label, // Label déjà localisé par Foundry
+        isHidden: hiddenCompendiums.includes(pack.collection)
+      });
+    }
+    // Trier les groupes et les packs à l'intérieur
+    const sortedPackGroups = Object.values(packGroups).sort((a, b) => a.title.localeCompare(b.title));
+    sortedPackGroups.forEach(group => group.packs.sort((a, b) => a.label.localeCompare(b.label)));
+
+    // --- Construction de la Hiérarchie des Dossiers ---
+    const allFolders = game.folders.filter(f => f.type === "Compendium");
+    const folderMap = new Map(); // Stockage temporaire ID -> objet dossier préparé
+    const rootFolders = [];      // Dossiers de premier niveau
+
+    // Créer des objets de données pour chaque dossier
+    for (const folder of allFolders) {
+      const folderData = {
+        id: folder.id,
+        label: folder.name, // Nom du dossier (peut nécessiter i18n si créé via code ?)
+        isHidden: hiddenFolders.includes(folder.id),
+        isFolder: true,
+        parentId: folder.folder?.id ?? null, // Récupère l'ID du parent s'il existe
+        children: [], // Initialise le tableau pour les enfants
+        depth: 0      // Initialise la profondeur
+      };
+      folderMap.set(folder.id, folderData);
+    }
+
+    // Fonction récursive pour calculer la profondeur de chaque dossier dans l'arbre
+    const calculateDepth = (folderData, depth) => {
+        folderData.depth = depth;
+        folderData.children.forEach(child => calculateDepth(child, depth + 1));
+    };
+
+    // Associer les enfants aux parents et identifier les racines
+    folderMap.forEach(folderData => {
+        if (folderData.parentId && folderMap.has(folderData.parentId)) {
+            // Ajoute ce dossier comme enfant de son parent trouvé dans la map
+            folderMap.get(folderData.parentId).children.push(folderData);
+        } else {
+            // Pas de parent (ou parent non trouvé), c'est un dossier racine
+            rootFolders.push(folderData);
+        }
+    });
+
+    // Trier les enfants de chaque dossier et calculer la profondeur à partir des racines
+    folderMap.forEach(folderData => folderData.children.sort((a,b) => a.label.localeCompare(b.label)));
+    rootFolders.sort((a,b) => a.label.localeCompare(b.label));
+    rootFolders.forEach(root => calculateDepth(root, 0)); // Démarre le calcul de profondeur
+
+    // Créer le groupe "Dossiers" pour le template s'il y a des dossiers
+    const folderHierarchyGroup = rootFolders.length > 0 ? {
+        title: game.i18n.localize("HIDECOMPENDIUM.SETTINGS.FOLDER_GROUP_TITLE"),
+        items: rootFolders, // Contient la structure hiérarchique
+        isFolderHierarchyGroup: true // Flag pour le template
+    } : null;
+
+    // --- Finalisation du Contexte ---
+    // Combiner les groupes de packs et le groupe de dossiers
+    const allGroups = [...sortedPackGroups];
+    if (folderHierarchyGroup) {
+      allGroups.push(folderHierarchyGroup);
+    }
+
+    // Retourner le contexte complet pour Handlebars
+    return {
+      groups: allGroups, // Tableau contenant tous les groupes à afficher
+      notes: game.i18n.localize('HIDECOMPENDIUM.SETTINGS.NOTES'), // Texte d'aide localisé
+      // Configuration pour le bouton "Sauvegarder" dans le footer générique
+      buttons: [
+        { type: "submit", icon: "fa-solid fa-save", label: game.i18n.localize("SETTINGS.Save") }
+      ]
+    };
+  }
+
+  /**
+   * Méthode appelée lors de la soumission du formulaire (clic sur sauvegarder).
+   * Récupère les données, détermine quels compendiums/dossiers sont cochés pour être cachés,
+   * et sauvegarde les IDs dans les paramètres correspondants.
+   * @param {SubmitEvent} event - L'événement de soumission.
+   * @param {HTMLFormElement} form - L'élément formulaire HTML.
+   * @param {FormDataExtended} formData - Données du formulaire étendues par Foundry.
+   * @private
+   */
+  static async #onSubmit(event, form, formData) {
+    const submittedData = formData.object; // Récupère un objet plat: { "hide.ID": true/false, "hideFolder.ID": true/false, ... }
+    const hiddenCompendiumIds = [];
+    const hiddenFolderIds = [];
+
+    // Parcourir les données soumises pour trouver les éléments cochés
+    for (const key in submittedData) {
+      const isChecked = submittedData[key] === true;
+      if (!isChecked) continue; // Ignorer les cases non cochées
+
+      if (key.startsWith("hide.")) { // C'est un compendium
+        const compendiumId = key.substring(5); // Extrait l'ID après "hide."
+        if (compendiumId) hiddenCompendiumIds.push(compendiumId);
+      } else if (key.startsWith("hideFolder.")) { // C'est un dossier
+        const folderId = key.substring(11); // Extrait l'ID après "hideFolder."
+        if (folderId) hiddenFolderIds.push(folderId);
+      }
+    }
+
+    // Sauvegarder les deux listes d'IDs dans les paramètres respectifs
+    await game.settings.set(MODULE_ID, COMPENDIUM_SETTING_KEY, hiddenCompendiumIds);
+    await game.settings.set(MODULE_ID, FOLDER_SETTING_KEY, hiddenFolderIds);
+
+    // Rafraîchir l'affichage de l'onglet compendiums pour appliquer les changements immédiatement
+    if (ui.compendium) {
+      ui.compendium.render(true);
+    }
+  }
+}

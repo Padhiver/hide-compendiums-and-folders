@@ -1,0 +1,75 @@
+# Nom du workflow
+name: Release Creation
+
+# Déclencheur : se lance lorsqu'une release est publiée sur GitHub
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    # Utilise la dernière version d'Ubuntu comme environnement d'exécution
+    runs-on: ubuntu-latest
+    steps:
+    # 1. Récupérer le code du dépôt
+    - name: Checkout files
+      uses: actions/checkout@v3 # Mise à jour vers une version plus récente si souhaité
+      with:
+        # Inclure les sous-modules si vous en utilisez
+        submodules: recursive
+
+    # 2. Remplacer les URLs du manifest et du téléchargement dans module.json
+    - name: Substitute Manifest and Download Links For Versioned Ones
+      id: sub_manifest_link_version
+      uses: microsoft/variable-substitution@v1
+      with:
+        # Le fichier à modifier
+        files: 'module.json'
+      env:
+        # Variables utilisées pour la substitution
+        version: ${{ github.event.release.tag_name }} # Version basée sur le tag de la release
+        manifest: https://github.com/${{ github.repository }}/releases/latest/download/module.json # URL du manifest
+        # --- MODIFIÉ ICI ---
+        download: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/hide-compendiums-and-folders.zip # URL de téléchargement du zip
+        url: https://github.com/${{ github.repository }} # URL du projet
+        changelog: https://github.com/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }} # URL du changelog
+
+    # 3. Créer l'archive zip avec les fichiers et dossiers requis
+    - name: Create archive
+      # --- MODIFIÉ ICI ---
+      # Commande zip pour inclure les fichiers et dossiers spécifiés
+      # - main.js et module.json à la racine
+      # - les dossiers languages, modules, styles, templates récursivement (-r)
+      # - Exclure les fichiers cachés commençant par "." (-x ".*")
+      run: zip hide-compendiums-and-folders.zip main.js module.json -r languages modules styles templates -x ".*"
+
+    # 4. Mettre à jour la release GitHub avec les fichiers générés (module.json et le zip)
+    - name: Update Release with Files
+      id: create_version_release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true # Permet de mettre à jour une release existante
+        name: ${{ github.event.release.name }} # Nom de la release
+        draft: false # Marquer comme non-brouillon (puisque 'types: [published]')
+        prerelease: ${{ github.event.release.prerelease }} # Marquer comme pré-release si c'est le cas
+        token: ${{ secrets.GITHUB_TOKEN }} # Token pour l'authentification
+        # --- MODIFIÉ ICI ---
+        artifacts: './module.json, ./hide-compendiums-and-folders.zip' # Fichiers à attacher
+        tag: ${{ github.event.release.tag_name }} # Tag de la release
+        body: ${{ github.event.release.body }} # Corps/Description de la release
+        # Définit si c'est la release 'latest'. 'legacy' est recommandé pour la compatibilité.
+        makeLatest: ${{ github.event.release.prerelease && 'false' || 'legacy' }}
+
+    # 5. (Optionnel) Publier sur le site de Foundry VTT si ce n'est pas une pré-release
+    - name: Publish Module to FoundryVTT Website
+      # Ne s'exécute que si ce n'est PAS une pré-release
+      if: ${{ !github.event.release.prerelease }}
+      id: publish-to-foundry-website
+      uses: cs96and/FoundryVTT-release-package@v1
+      with:
+        # Votre token secret pour l'API Foundry (à configurer dans les secrets GitHub)
+        package-token: ${{ secrets.PACKAGE_TOKEN }}
+        # L'URL du manifest pour cette version spécifique
+        manifest-url: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/module.json
+        # L'URL des notes de version (changelog)
+        notes-url: https://github.com/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }}
