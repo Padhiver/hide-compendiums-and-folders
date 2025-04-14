@@ -1,5 +1,4 @@
 /* === Styles pour le Masquage des Compendiums/Dossiers dans l'Annuaire === */
-/* PAS D'ID ICI - Ces règles ciblent l'annuaire global */
 li.directory-item.compendium.module-hidden-compendium,
 li.directory-item.folder.module-hidden-folder {
   display: none !important;
@@ -135,7 +134,7 @@ li.directory-item.folder.module-hidden-folder {
   color: #9f8475;
 }
 
-/* NOUVELLE RÈGLE: Change la couleur du texte si le label contient une checkbox cochée */
+/* Change la couleur du texte si le label contient une checkbox cochée */
 #hide-compendiums-and-folders-settings .form-group label:has(.toggle-container input[type="checkbox"]:checked) .compendium-label-text {
   color: var(--color-text-light-highlight, #FFF);
   font-weight: bold;

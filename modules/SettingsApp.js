@@ -12,11 +12,11 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
     // Options générales de l'application
     id: `${MODULE_ID}-settings`, // ID HTML unique pour la fenêtre
-    tag: "form", // L'élément racine est un formulaire
+    tag: "form", 
     // Options du gestionnaire de formulaire intégré V2
     form: {
-      handler: SettingsApp.#onSubmit, // Méthode à appeler lors de la soumission
-      closeOnSubmit: false,           // Ferme la fenêtre après sauvegarde
+      handler: SettingsApp.#onSubmit, 
+      closeOnSubmit: false,           
     },
     // Position et taille
     position: {
@@ -25,7 +25,7 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     // Options spécifiques à la fenêtre (barre de titre, classes CSS)
     window: {
-      title: "HIDECOMPENDIUM.SETTINGS.WINDOW_TITLE", // Clé i18n pour le titre
+      title: "HIDECOMPENDIUM.SETTINGS.WINDOW_TITLE", 
       contentClasses: ["sheet", "cachecomp-settings"], // Classes CSS pour le style
     },
   });
@@ -49,7 +49,7 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     // Partie pied de page (pour les boutons)
     footer: {
-      template: "templates/generic/form-footer.hbs", // Template générique de Foundry
+      template: "templates/generic/form-footer.hbs",
     }
   };
 
@@ -67,7 +67,7 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // --- Groupement des Compendiums par Module/Système ---
     const packGroups = {};
     for (const pack of game.packs) {
-      if (!pack.visible) continue; // Ignorer les packs non visibles par l'utilisateur
+      if (!pack.visible) continue; 
       const metadata = pack.metadata;
       const packageName = metadata.packageName;
       let packageTitle = game.i18n.localize('HIDECOMPENDIUM.SETTINGS.UNKNOWN_PACKAGE');
@@ -84,14 +84,14 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
         packGroups[packageTitle] = {
           title: packageTitle,
           packs: [],
-          isPackGroup: true // Flag pour le template
+          isPackGroup: true 
         };
       }
 
       // Ajouter les données du pack au groupe
       packGroups[packageTitle].packs.push({
         id: pack.collection,
-        label: metadata.label, // Label déjà localisé par Foundry
+        label: metadata.label,
         isHidden: hiddenCompendiums.includes(pack.collection)
       });
     }
@@ -101,19 +101,19 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // --- Construction de la Hiérarchie des Dossiers ---
     const allFolders = game.folders.filter(f => f.type === "Compendium");
-    const folderMap = new Map(); // Stockage temporaire ID -> objet dossier préparé
-    const rootFolders = [];      // Dossiers de premier niveau
+    const folderMap = new Map();
+    const rootFolders = [];  
 
     // Créer des objets de données pour chaque dossier
     for (const folder of allFolders) {
       const folderData = {
         id: folder.id,
-        label: folder.name, // Nom du dossier (peut nécessiter i18n si créé via code ?)
+        label: folder.name, 
         isHidden: hiddenFolders.includes(folder.id),
         isFolder: true,
-        parentId: folder.folder?.id ?? null, // Récupère l'ID du parent s'il existe
-        children: [], // Initialise le tableau pour les enfants
-        depth: 0      // Initialise la profondeur
+        parentId: folder.folder?.id ?? null, 
+        children: [], 
+        depth: 0      
       };
       folderMap.set(folder.id, folderData);
     }
@@ -138,13 +138,13 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Trier les enfants de chaque dossier et calculer la profondeur à partir des racines
     folderMap.forEach(folderData => folderData.children.sort((a,b) => a.label.localeCompare(b.label)));
     rootFolders.sort((a,b) => a.label.localeCompare(b.label));
-    rootFolders.forEach(root => calculateDepth(root, 0)); // Démarre le calcul de profondeur
+    rootFolders.forEach(root => calculateDepth(root, 0));
 
     // Créer le groupe "Dossiers" pour le template s'il y a des dossiers
     const folderHierarchyGroup = rootFolders.length > 0 ? {
         title: game.i18n.localize("HIDECOMPENDIUM.SETTINGS.FOLDER_GROUP_TITLE"),
-        items: rootFolders, // Contient la structure hiérarchique
-        isFolderHierarchyGroup: true // Flag pour le template
+        items: rootFolders, 
+        isFolderHierarchyGroup: true 
     } : null;
 
     // --- Finalisation du Contexte ---
@@ -156,8 +156,8 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Retourner le contexte complet pour Handlebars
     return {
-      groups: allGroups, // Tableau contenant tous les groupes à afficher
-      notes: game.i18n.localize('HIDECOMPENDIUM.SETTINGS.NOTES'), // Texte d'aide localisé
+      groups: allGroups, 
+      notes: game.i18n.localize('HIDECOMPENDIUM.SETTINGS.NOTES'), 
       // Configuration pour le bouton "Sauvegarder" dans le footer générique
       buttons: [
         { type: "submit", icon: "fa-solid fa-save", label: game.i18n.localize("SETTINGS.Save") }
@@ -175,14 +175,14 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
    * @private
    */
   static async #onSubmit(event, form, formData) {
-    const submittedData = formData.object; // Récupère un objet plat: { "hide.ID": true/false, "hideFolder.ID": true/false, ... }
+    const submittedData = formData.object; 
     const hiddenCompendiumIds = [];
     const hiddenFolderIds = [];
 
     // Parcourir les données soumises pour trouver les éléments cochés
     for (const key in submittedData) {
       const isChecked = submittedData[key] === true;
-      if (!isChecked) continue; // Ignorer les cases non cochées
+      if (!isChecked) continue; 
 
       if (key.startsWith("hide.")) { // C'est un compendium
         const compendiumId = key.substring(5); // Extrait l'ID après "hide."

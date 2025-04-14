@@ -4,14 +4,14 @@
   "description": "Allows you to selectively hide compendiums and folders via a configuration menu.",
   "version": "0.1",
   "compatibility": {
-      "minimum": "13",
-      "verified": "13"
+    "minimum": "13",
+    "verified": "13"
   },
   "authors": [
-      {
-          "name": "Padhiver",
-          "discord": "Padhiver"
-      }
+    {
+      "name": "Padhiver",
+      "discord": "Padhiver"
+    }
   ],
   "esmodules": [
     "main.js"

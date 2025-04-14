@@ -53,12 +53,12 @@ Hooks.once('init', async () => {
   game.settings.registerMenu(MODULE_ID, 'settingsMenu', {
     name: game.i18n.localize('HIDECOMPENDIUM.SETTINGS.MENU.NAME'), // Nom affiché dans la liste des menus
     label: game.i18n.localize('HIDECOMPENDIUM.SETTINGS.MENU.LABEL'), // Texte du bouton d'ouverture
-    icon: "fas fa-eye-slash", // Icône Font Awesome
-    type: SettingsApp,       // Classe de l'application à ouvrir (notre fenêtre V2)
-    restricted: true         // Seuls les GMs peuvent voir/utiliser ce menu
+    icon: "fas fa-eye-slash",
+    type: SettingsApp,
+    restricted: true        
   });
 
-  console.log(`${MODULE_ID} | Initialisation terminée.`); // Log minimaliste
+  console.log(`${MODULE_ID} | Initialisation terminée.`); 
 });
 
 /**
@@ -73,15 +73,11 @@ Hooks.on('renderCompendiumDirectory', (app, html, data) => {
 
   // --- Masquage des Compendiums ---
   if (hiddenCompendiums.length > 0) {
-    // Remplacement de html.find(...).each(...) par querySelectorAll(...).forEach(...)
     html.querySelectorAll('li.directory-item.compendium').forEach(element => {
-      // Remplacement de li.data('pack') par element.dataset.pack
       const packId = element.dataset.pack;
       if (packId && hiddenCompendiums.includes(packId)) {
-        // Remplacement de li.css(...) par element.style.setProperty(...)
         element.style.setProperty('display', 'none', 'important');
         element.style.setProperty('visibility', 'hidden', 'important');
-        // Remplacement de li.addClass(...) par element.classList.add(...)
         element.classList.add('module-hidden-compendium');
       }
     });
@@ -90,8 +86,7 @@ Hooks.on('renderCompendiumDirectory', (app, html, data) => {
   // --- Masquage des Dossiers (choix explicite de l'utilisateur) ---
   if (hiddenFolders.length > 0) {
     html.querySelectorAll('li.directory-item.folder').forEach(element => {
-      // Remplacement de li.data('folder-id') par element.dataset.folderId
-      const folderId = element.dataset.folderId; // Notez le camelCase pour dataset
+      const folderId = element.dataset.folderId;
       if (folderId && hiddenFolders.includes(folderId)) {
         element.style.setProperty('display', 'none', 'important');
         element.style.setProperty('visibility', 'hidden', 'important');
@@ -104,20 +99,14 @@ Hooks.on('renderCompendiumDirectory', (app, html, data) => {
   // Parcourt les dossiers qui n'ont PAS été cachés explicitement
   html.querySelectorAll('li.directory-item.folder:not(.module-hidden-folder)').forEach(folderElement => {
     // Vérifie s'il reste des compendiums visibles DANS ce dossier
-    // Remplacement de folder.find(...) par folderElement.querySelectorAll(...)
-    // Utilisation de :scope pour chercher uniquement dans les enfants directs
     const visibleCompendiums = folderElement.querySelectorAll(':scope > ol.directory-list > li.directory-item.compendium:not(.module-hidden-compendium)');
     // Vérifie s'il y avait des compendiums au total
     const totalCompendiums = folderElement.querySelectorAll(':scope > ol.directory-list > li.directory-item.compendium');
-
-    // TODO: Pourrait être amélioré pour vérifier aussi les sous-dossiers visibles
 
     if (visibleCompendiums.length === 0 && totalCompendiums.length > 0) {
        // Masque le dossier s'il est devenu vide
        folderElement.style.setProperty('display', 'none', 'important');
        folderElement.style.setProperty('visibility', 'hidden', 'important');
-       // const folderName = folderElement.querySelector(':scope > header .folder-name')?.textContent.trim() || game.i18n.localize('HIDECOMPENDIUM.COMPENDIUM.UNKNOWN_FOLDER');
-       // console.log(`${MODULE_ID} | Masquage du dossier devenu vide : ${folderName}`);
     }
   });
 });
