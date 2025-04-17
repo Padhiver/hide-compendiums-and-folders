@@ -1,12 +1,13 @@
-{{! Template principal de la fenêtre de configuration }}
-<div>
+<section class="hide-compendium-settings">
+  {{! Template principal de la fenêtre de configuration }}
+  <div>
     {{! Notes explicatives en haut }}
     <p class="notes">{{notes}}</p>
 
     {{! Boucle sur tous les groupes }}
     {{#each groups}}
-    {{! Utilise l'élément <fieldset> avec <legend> }}
-    <fieldset class="compendium-group {{#if this.isFolderHierarchyGroup}}folder-hierarchy-group{{else if this.isPackGroup}}pack-group{{/if}}">
+      {{! Utilise l'élément <fieldset> avec <legend> }}
+      <fieldset class="compendium-group {{#if this.isFolderHierarchyGroup}}folder-hierarchy-group{{else if this.isPackGroup}}pack-group{{/if}}">
 
         {{! --- Début du Checkbox Hack --- }}
         {{! 1. La checkbox invisible qui contrôle l'état (fermée par défaut) }}
@@ -15,12 +16,12 @@
 
         {{! 2. La légende contient maintenant un label cliquable }}
         <legend>
-            {{!-- Le label est lié à la checkbox via 'for' et contient l'icône + titre --}}
-            <label for="toggle-group-{{@index}}" class="toggle-label">
-                 {{!-- L'icône flèche est DANS le label maintenant --}}
-                <i class="fas fa-chevron-right toggle-icon"></i>
-                {{this.title}}
-            </label>
+          {{!-- Le label est lié à la checkbox via 'for' et contient l'icône + titre --}}
+          <label for="toggle-group-{{@index}}" class="toggle-label">
+            {{!-- L'icône flèche est DANS le label maintenant --}}
+            <i class="fas fa-chevron-right toggle-icon"></i>
+            {{this.title}}
+          </label>
         </legend>
         {{! --- Fin du Checkbox Hack --- }}
 
@@ -28,30 +29,31 @@
         {{! 3. Le contenu à masquer/afficher (reste le même) }}
         <div class="compendium-group-content">
 
-            {{#if this.isPackGroup}}
+          {{#if this.isPackGroup}}
             {{! --- Affichage pour un groupe de Compendiums --- }}
             {{#each this.packs}}
-            <div class="form-group">
+              <div class="form-group">
                 <label>
-                    <span class="compendium-label-text">{{this.label}}</span>
-                    <div class="toggle-container">
-                        <input type="checkbox" name="hide.{{this.id}}" id="hide.{{this.id}}" {{#if this.isHidden}}checked{{/if}}>
-                        <span class="toggle-indicator" aria-hidden="true"></span>
-                    </div>
+                  <span class="compendium-label-text">{{this.label}}</span>
+                  <div class="toggle-container">
+                    <input type="checkbox" name="hide.{{this.id}}" id="hide.{{this.id}}" {{#if this.isHidden}}checked{{/if}}>
+                    <span class="toggle-indicator" aria-hidden="true"></span>
+                  </div>
                 </label>
-            </div>
+              </div>
             {{/each}}
-            {{else if this.isFolderHierarchyGroup}}
+          {{else if this.isFolderHierarchyGroup}}
             {{! --- Affichage pour la Hiérarchie des Dossiers --- }}
             {{#each this.items}}
-            {{> "modules/hide-compendiums-and-folders/templates/folder-row.hbs"}}
+              {{> "modules/hide-compendiums-and-folders/templates/folder-row.hbs"}}
             {{/each}}
-            {{/if}}
+          {{/if}}
 
         </div>
-    </fieldset>
+      </fieldset>
     {{else}}
-    {{! Message si aucun groupe n'est trouvé }}
-    <p>{{localize "CACHECOMP.TEMPLATE.NO_COMPENDIUMS_OR_FOLDERS"}}</p>
+      {{! Message si aucun groupe n'est trouvé }}
+      <p>{{localize "CACHECOMP.TEMPLATE.NO_COMPENDIUMS_OR_FOLDERS"}}</p>
     {{/each}}
-</div>
+  </div>
+</section>

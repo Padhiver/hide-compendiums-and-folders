@@ -10,8 +10,7 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** @override */
   static DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
-    // Options générales de l'application
-    id: `${MODULE_ID}-settings`, // ID HTML unique pour la fenêtre
+    classes: ["hide-compendium-dialog"],
     tag: "form", 
     // Options du gestionnaire de formulaire intégré V2
     form: {
@@ -26,7 +25,7 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Options spécifiques à la fenêtre (barre de titre, classes CSS)
     window: {
       title: "HIDECOMPENDIUM.SETTINGS.WINDOW_TITLE", 
-      contentClasses: ["sheet", "cachecomp-settings"], // Classes CSS pour le style
+      contentClasses: ["standard-form"], // Classes CSS pour le style
     },
   });
 

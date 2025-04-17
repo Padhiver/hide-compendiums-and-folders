@@ -10,18 +10,17 @@ li.directory-item.folder.module-hidden-folder {
   overflow: hidden;
 }
 
-
-/* === Styles pour la Fenêtre de Configuration (#hide-compendiums-and-folders-settings) === */
+/* === Styles pour la Fenêtre de Configuration (.hide-compendium-dialog) === */
 
 /* Notes explicatives en haut */
-#hide-compendiums-and-folders-settings .notes {
+.hide-compendium-settings .notes {
   font-style: italic;
   color: var(--color-text-dark-secondary);
   margin-bottom: 1em;
 }
 
 /* Style du groupe de section (fieldset) */
-#hide-compendiums-and-folders-settings fieldset.compendium-group {
+.hide-compendium-settings fieldset.compendium-group {
   border: 1px solid var(--color-border-light-secondary, #9f9275);
   border-radius: 5px;
   margin-bottom: 15px;
@@ -33,12 +32,12 @@ li.directory-item.folder.module-hidden-folder {
 /* --- Styles pour le Hack de la Checkbox (Collapse/Expand sans JS) --- */
 
 /* 1. Cacher la checkbox qui contrôle l'état */
-#hide-compendiums-and-folders-settings .toggle-input {
+.hide-compendium-settings .toggle-input {
   display: none;
 }
 
 /* 2. Style de la balise legend */
-#hide-compendiums-and-folders-settings fieldset.compendium-group > legend {
+.hide-compendium-settings fieldset.compendium-group > legend {
   font-weight: bold;
   font-family: "Modesto Condensed", "Palatino Linotype", serif;
   font-size: 1.5rem;
@@ -51,7 +50,7 @@ li.directory-item.folder.module-hidden-folder {
 }
 
 /* 3. Style du label cliquable dans la legend */
-#hide-compendiums-and-folders-settings legend .toggle-label {
+.hide-compendium-settings legend .toggle-label {
   display: inline-flex;
   align-items: center;
   cursor: pointer;
@@ -62,7 +61,7 @@ li.directory-item.folder.module-hidden-folder {
 }
 
 /* 4. Style de l'icône flèche dans le label */
-#hide-compendiums-and-folders-settings legend .toggle-label .toggle-icon {
+.hide-compendium-settings legend .toggle-label .toggle-icon {
   margin-right: 8px;
   font-size: 0.9em;
   transition: transform 0.2s ease-in-out;
@@ -70,48 +69,45 @@ li.directory-item.folder.module-hidden-folder {
 }
 
 /* 5. Masquer le contenu par défaut */
-#hide-compendiums-and-folders-settings .toggle-input + legend + .compendium-group-content {
+.hide-compendium-settings .toggle-input + legend + .compendium-group-content {
   display: none;
 }
 
 /* 6. Afficher le contenu quand la checkbox est cochée */
-#hide-compendiums-and-folders-settings .toggle-input:checked + legend + .compendium-group-content {
+.hide-compendium-settings .toggle-input:checked + legend + .compendium-group-content {
   display: block;
 }
 
 /* 7. Rotation de l'icône quand la checkbox est cochée */
-#hide-compendiums-and-folders-settings .toggle-input:checked + legend > .toggle-label .toggle-icon {
-   transform: rotate(90deg);
+.hide-compendium-settings .toggle-input:checked + legend > .toggle-label .toggle-icon {
+    transform: rotate(90deg);
 }
 
 /* --- Fin des Styles pour le Hack de la Checkbox --- */
 
-
 /* Contenu à l'intérieur d'un groupe */
-#hide-compendiums-and-folders-settings .compendium-group-content {
+.hide-compendium-settings .compendium-group-content {
   padding-top: 10px;
   padding-left: 5px;
 }
 
-
 /* --- Styles pour les Lignes de Configuration (Compendium/Dossier) --- */
 
 /* Style de chaque ligne */
-#hide-compendiums-and-folders-settings .form-group {
+.hide-compendium-settings .form-group {
   margin-bottom: 5px;
   padding: 2px 0;
   display: flex;
 }
 
 /* Règle spécifique pour annuler un style Foundry */
-#hide-compendiums-and-folders-settings fieldset.compendium-group .compendium-group-content .form-group > label {
+.hide-compendium-settings fieldset.compendium-group .compendium-group-content .form-group > label {
   flex: initial !important;
 }
 
-
 /* Style du label conteneur (la ligne entière) */
-/* C'EST CETTE RÈGLE QUI POSAIT PROBLÈME - MAINTENANT SCOPÉE PAR L'ID */
-#hide-compendiums-and-folders-settings .form-group label {
+/* C'ÉTAIT CETTE RÈGLE QUI POSAIT PROBLÈME - MAINTENANT SCOPÉE PAR L'ID */
+.hide-compendium-settings .form-group label {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -123,7 +119,7 @@ li.directory-item.folder.module-hidden-folder {
 }
 
 /* Style pour le texte (nom du compendium/dossier) */
-#hide-compendiums-and-folders-settings .form-group label .compendium-label-text {
+.hide-compendium-settings .form-group label .compendium-label-text {
   flex-grow: 1;
   margin-right: 10px;
   white-space: nowrap;
@@ -135,22 +131,21 @@ li.directory-item.folder.module-hidden-folder {
 }
 
 /* Change la couleur du texte si le label contient une checkbox cochée */
-#hide-compendiums-and-folders-settings .form-group label:has(.toggle-container input[type="checkbox"]:checked) .compendium-label-text {
+.hide-compendium-settings .form-group label:has(.toggle-container input[type="checkbox"]:checked) .compendium-label-text {
   color: var(--color-text-light-highlight, #FFF);
   font-weight: bold;
 }
 
 /* Style pour les labels dont le toggle est activé */
-#hide-compendiums-and-folders-settings .form-group label.label-checked .compendium-label-text {
+.hide-compendium-settings .form-group label.label-checked .compendium-label-text {
   color: var(--color-text-light-highlight, #FFF);
   font-weight: bold;
 }
 
-
 /* --- Styles pour le Bouton Bascule (Toggle Switch) --- */
 
 /* Conteneur du toggle switch */
-#hide-compendiums-and-folders-settings .form-group label .toggle-container {
+.hide-compendium-settings .form-group label .toggle-container {
   flex-shrink: 0 !important;
   width: 40px !important;
   height: 20px !important;
@@ -158,12 +153,12 @@ li.directory-item.folder.module-hidden-folder {
 }
 
 /* Cacher la vraie checkbox du toggle */
-#hide-compendiums-and-folders-settings .toggle-container input[type="checkbox"] {
+.hide-compendium-settings .toggle-container input[type="checkbox"] {
   display: none;
 }
 
 /* Indicateur visuel du toggle */
-#hide-compendiums-and-folders-settings .toggle-container .toggle-indicator {
+.hide-compendium-settings .toggle-container .toggle-indicator {
   display: block;
   width: 100%;
   height: 100%;
@@ -177,7 +172,7 @@ li.directory-item.folder.module-hidden-folder {
 }
 
 /* Cercle intérieur du toggle */
-#hide-compendiums-and-folders-settings .toggle-container .toggle-indicator::before {
+.hide-compendium-settings .toggle-container .toggle-indicator::before {
   content: "";
   position: absolute;
   width: 16px;
@@ -191,29 +186,28 @@ li.directory-item.folder.module-hidden-folder {
 }
 
 /* Style quand le toggle est activé : fond */
-#hide-compendiums-and-folders-settings .toggle-container input[type="checkbox"]:checked + .toggle-indicator {
+.hide-compendium-settings .toggle-container input[type="checkbox"]:checked + .toggle-indicator {
   background: var(--color-toggle-checked-bg, #9f9275);
   border-color: var(--color-toggle-checked-bg, #9f9275);
 }
 
 /* Style quand le toggle est activé : cercle */
-#hide-compendiums-and-folders-settings .toggle-container input[type="checkbox"]:checked + .toggle-indicator::before {
+.hide-compendium-settings .toggle-container input[type="checkbox"]:checked + .toggle-indicator::before {
   transform: translateX(20px);
   background: var(--color-toggle-switch, #FFF);
 }
-
 
 /* === Styles Généraux de la Fenêtre de Configuration === */
 /* (Déjà préfixés par l'ID lors de la passe précédente) */
 
 /* Style du bouton "Sauvegarder" dans le pied de page */
-#hide-compendiums-and-folders-settings footer button {
+.hide-compendium-settings footer button {
   width: 100%;
   margin-top: 10px;
 }
 
 /* Zone de contenu scrollable de la fenêtre */
-#hide-compendiums-and-folders-settings .window-content {
+.hide-compendium-settings .window-content {
   max-height: 70vh;
   overflow-y: auto;
   padding-bottom: 5px;
