@@ -1,4 +1,4 @@
-# Hide Compendiums & Folders
+# Hide Compendiums & Folders /!\ v13 Only
 System agnostic module that allows you to selectively hide compendiums and folders via a configuration menu.
 
 https://github.com/user-attachments/assets/e67aaed8-0547-4195-a1c6-c5025fb7320c
