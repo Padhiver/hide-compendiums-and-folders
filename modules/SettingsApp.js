@@ -9,7 +9,7 @@ const FOLDER_SETTING_KEY = 'hiddenFolders';
 export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** @override */
-  static DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
+  static DEFAULT_OPTIONS = {
     classes: ["hide-compendium-dialog"],
     tag: "form", 
     // Options du gestionnaire de formulaire intégré V2
@@ -27,7 +27,7 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
       title: "HIDECOMPENDIUM.SETTINGS.WINDOW_TITLE", 
       contentClasses: ["standard-form"], // Classes CSS pour le style
     },
-  });
+  };
 
   /**
    * Getter pour retourner le titre localisé de la fenêtre.
