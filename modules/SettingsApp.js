@@ -44,7 +44,8 @@ export class SettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static PARTS = {
     // Partie principale du contenu
     content: {
-      template: `modules/${MODULE_ID}/templates/settings-app.hbs`
+      template: `modules/${MODULE_ID}/templates/settings-app.hbs`,
+      classes: ["scrollable"]
     },
     // Partie pied de page (pour les boutons)
     footer: {
