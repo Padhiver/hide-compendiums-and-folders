@@ -1,0 +1,31 @@
+{
+  "HIDECOMPENDIUM": {
+    "SETTINGS": {
+      "HIDDENLIST_COMPENDIUMS": {
+        "NAME": "隐藏的合集",
+        "HINT": "通过本模块隐藏的合集列表"
+      },
+      "HIDDENLIST_FOLDERS": {
+        "NAME": "隐藏的文件夹",
+        "HINT": "通过本模块隐藏的合集文件夹内部列表"
+      },
+      "MENU": {
+        "NAME": "配置可见合集",
+        "LABEL": "隐藏/显示合集"
+      },
+      "WINDOW_TITLE": "隐藏/显示合集与文件夹",
+      "UNKNOWN_PACKAGE": "未知集合包",
+      "NOTES": "勾选您希望在合集标签页中隐藏的合集或文件夹。取消勾选可重新显示。",
+      "FOLDER_GROUP_TITLE": "文件夹"
+    },
+    "TEMPLATE": {
+      "NO_COMPENDIUMS_OR_FOLDERS": "未找到或无法访问任何可配置的合集或文件夹"
+    },
+    "COMPENDIUM": {
+      "UNKNOWN_FOLDER": "未知文件夹"
+    }
+  },
+  "SETTINGS": {
+      "Save": "保存"
+  }
+}
